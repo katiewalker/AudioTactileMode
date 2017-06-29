@@ -7,6 +7,9 @@ import processing.app.Base;
 import processing.app.RunnerListener;
 import processing.app.Sketch;
 import processing.app.SketchException;
+import processing.app.ui.Editor;
+import processing.app.ui.EditorException;
+import processing.app.ui.EditorState;
 import processing.mode.java.JavaMode;
 import processing.mode.java.runner.Runner;
 
@@ -18,6 +21,12 @@ public class AudioTactileMode extends JavaMode {
     super(base, folder);
 
     setupPattern = Pattern.compile("size\\([0-9]+,\\s*[0-9]*\\);");
+  }
+
+  @Override
+  public Editor createEditor(Base base, String path,
+      EditorState state) throws EditorException {
+    return new AudioTactileEditor(base, path, state, this);
   }
 
   @Override
@@ -50,5 +59,8 @@ public class AudioTactileMode extends JavaMode {
     }
 
     return -1;
+  }
+
+  public void handleRead(Sketch sketch) {
   }
 }
