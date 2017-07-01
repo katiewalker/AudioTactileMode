@@ -18,8 +18,8 @@ public class AudioTactileToolbar extends JavaToolbar {
     List<EditorButton> buttons = super.createButtons();
 
     readButton = new EditorButton(this,
-        "/lib/toolbar/read",
-        "toolbar.read",
+        "theme/toolbar/read",
+        "Read",
         Language.text("toolbar.read")) {
       @Override
       public void actionPerformed(ActionEvent e) {
