@@ -31,7 +31,7 @@ public class AudioTactileMode extends JavaMode {
 
   @Override
   public String getTitle() {
-    return "Java With A Different Name";
+    return "Audio Tactile Mode";
   }
 
   @Override
@@ -52,15 +52,12 @@ public class AudioTactileMode extends JavaMode {
     return super.handleLaunch(sketch, listener, present);
   }
 
-  int findStartOfSetup(String code) {
+  private int findStartOfSetup(String code) {
     Matcher matcher = setupPattern.matcher(code);
     if (matcher.find()) {
       return matcher.end();
     }
 
     return -1;
-  }
-
-  public void handleRead(Sketch sketch) {
   }
 }

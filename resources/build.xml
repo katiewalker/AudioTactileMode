@@ -1,105 +1,153 @@
 <project name="AudioTactileMode" default="install" basedir="../">
-    <description>Mode for providing an REPL console in Processing 3.0+</description>
+  <description>Mode for programming with visual impairments.
+  </description>
 
-    <!-- All required modification (setting of paths, etc.) are to be done in the build.properties file
-         when building the REPL Mode -->
-    <property file="./resources/build.properties" />
+  <!-- All required modification (setting of paths, etc.) are to be done in the build.properties file
+       when building the REPL Mode -->
+  <property file="./resources/build.properties"/>
 
 
-    <!-- Nothing below this line required modification -->
-    <!-- - - - - - - - - - - - - - - - - - - - - - - -->
-    <property name="src" 		value="src" />
-    <property name="build" 		value="build" />
-    <property name="bin" 		value="bin" />
-    <property name="dist" 		value="dist" />
+  <!-- Nothing below this line required modification -->
+  <!-- - - - - - - - - - - - - - - - - - - - - - - -->
+  <property name="src" value="src"/>
+  <property name="test.src" value="test"/>
+  <property name="build" value="build/src"/>
+  <property name="test.build" value="build/test"/>
+  <property name="bin" value="bin"/>
+  <property name="dist" value="dist"/>
 
-    <path id="library-classpath">
-        <fileset dir="${processing.classes.core}" >
-            <include name="*.jar" />
-        </fileset>
-        
-        <fileset dir="${processing.classes.pde}" >
-            <include name="*.jar" />
-        </fileset>
-        
-        <fileset dir="${processing.classes.javamode}" >
-            <include name="*.jar" />
-        </fileset>
+  <path id="library-classpath">
+    <fileset dir="${processing.classes.core}">
+      <include name="*.jar"/>
+    </fileset>
 
-        <fileset dir="lib" >
-            <include name="*.jar" />
-        </fileset>
-    </path>
+    <fileset dir="${processing.classes.pde}">
+      <include name="*.jar"/>
+    </fileset>
 
-    <!-- - - - - - - - - - - - - - - - - - - - - - -
-        BUILD
-    - - - - - - - - - - - - - - - - - - - - - - - -->
-    <target name="build">
-        <propertyfile file="build.number" /> <!-- create the build.number file if it doesn't exist -->
-        <buildnumber file="build.number" />
+    <fileset dir="${processing.classes.javamode}">
+      <include name="*.jar"/>
+    </fileset>
 
-        <mkdir dir="${build}" />
+    <fileset dir="lib">
+      <include name="*.jar"/>
+    </fileset>
+  </path>
 
-        <javac srcdir="${src}" destdir="${build}" source="${java.target.version}" includeantruntime="false">
-            <classpath>
-                <path refid="library-classpath"/>
-            </classpath>
-        </javac>
-    </target>
+  <path id="test-classpath">
+    <fileset dir="lib">
+      <include name="junit*.jar"/>
+      <include name="mockito*.jar"/>
+      <include name="hamcrest*.jar"/>
+    </fileset>
+    <pathelement location="${build}"/>
+    <fileset dir="${processing.classes.core}">
+      <include name="*.jar"/>
+    </fileset>
 
-    <!-- - - - - - - - - - - - - - - - - - - - - - -
-        PACKAGE
-    - - - - - - - - - - - - - - - - - - - - - - - -->
-    <target name="package" depends="build">
-        <delete dir="${dist}" />
-        <property name="bundle" value="${dist}/${lib.name}"/>
-        <mkdir dir="${bundle}" />
-        <mkdir dir="${bundle}/mode" />
+    <fileset dir="${processing.classes.pde}">
+      <include name="*.jar"/>
+    </fileset>
 
-        <jar jarfile="${bundle}/mode/${lib.name}.jar" basedir="build"/>
-		<!--zip destfile="${dist}/mode/${lib.name}.jar" excludes="**/*.MF">
-		    <zipgroupfileset dir="lib" includes="*.jar" />
-		</zip-->
+    <fileset dir="${processing.classes.javamode}">
+      <include name="*.jar"/>
+    </fileset>
+  </path>
 
-        <copy todir="${bundle}">
-            <fileset dir="resources/">
-                <exclude name="build*" />
-            </fileset>
-        </copy>
+  <!-- - - - - - - - - - - - - - - - - - - - - - -
+      BUILD
+  - - - - - - - - - - - - - - - - - - - - - - - -->
+  <target name="build">
+    <propertyfile
+      file="build.number"/> <!-- create the build.number file if it doesn't exist -->
+    <buildnumber file="build.number"/>
 
-        <copy todir="${bundle}/mode">
-            <fileset dir="lib/" />
-        </copy>
+    <mkdir dir="${build}"/>
 
-        <replaceregexp file="${bundle}/mode.properties" flags="g"
-                               match="@@version@@" replace="${build.number}" />
-        <replaceregexp file="${bundle}/mode.properties" flags="g"
-                               match="@@pretty-version@@" replace="${release}" />
-    </target>
+    <javac srcdir="${src}" destdir="${build}" source="${java.target.version}"
+      includeantruntime="false">
+      <classpath>
+        <path refid="library-classpath"/>
+      </classpath>
+    </javac>
+  </target>
 
-    <!-- - - - - - - - - - - - - - - - - - - - - - -
-        INSTALL
-    - - - - - - - - - - - - - - - - - - - - - - - -->
-    <target name="install" depends="package" >
-        <delete dir="${processing.modes}/${lib.name}" />
+  <!-- - - - - - - - - - - - - - - - - - - - - - -
+      PACKAGE
+  - - - - - - - - - - - - - - - - - - - - - - - -->
+  <target name="package" depends="build">
+    <delete dir="${dist}"/>
+    <property name="bundle" value="${dist}/${lib.name}"/>
+    <mkdir dir="${bundle}"/>
+    <mkdir dir="${bundle}/mode"/>
 
-        <copy todir="${processing.modes}/">
-            <fileset dir="${dist}" />
-        </copy>
-    </target>
+    <jar jarfile="${bundle}/mode/${lib.name}.jar" basedir="${build}"/>
+    <!--zip destfile="${dist}/mode/${lib.name}.jar" excludes="**/*.MF">
+        <zipgroupfileset dir="lib" includes="*.jar" />
+    </zip-->
 
-    <!-- - - - - - - - - - - - - - - - - - - - - - -
-        CLEAN
-    - - - - - - - - - - - - - - - - - - - - - - - -->
-    <target name="clean" >
-        <delete dir="${build}" />
-        <delete dir="${dist}" />
-    </target>
+    <copy todir="${bundle}">
+      <fileset dir="resources/">
+        <exclude name="build*"/>
+      </fileset>
+    </copy>
 
-    <!-- - - - - - - - - - - - - - - - - - - - - - -
-        RUN
-    - - - - - - - - - - - - - - - - - - - - - - - -->
-    <target name="run" depends="install">
-        <exec executable="${processing.executable}" spawn="false" />
-    </target>
+    <copy todir="${bundle}/mode">
+      <fileset dir="lib/"/>
+    </copy>
+
+    <replaceregexp file="${bundle}/mode.properties" flags="g"
+      match="@@version@@" replace="${build.number}"/>
+    <replaceregexp file="${bundle}/mode.properties" flags="g"
+      match="@@pretty-version@@" replace="${release}"/>
+  </target>
+
+  <!-- - - - - - - - - - - - - - - - - - - - - - -
+      INSTALL
+  - - - - - - - - - - - - - - - - - - - - - - - -->
+  <target name="install" depends="package">
+    <delete dir="${processing.modes}/${lib.name}"/>
+
+    <copy todir="${processing.modes}/">
+      <fileset dir="${dist}"/>
+    </copy>
+  </target>
+
+  <!-- - - - - - - - - - - - - - - - - - - - - - -
+      CLEAN
+  - - - - - - - - - - - - - - - - - - - - - - - -->
+  <target name="clean">
+    <delete dir="${build}"/>
+    <delete dir="${dist}"/>
+  </target>
+
+  <!-- - - - - - - - - - - - - - - - - - - - - - -
+      RUN
+  - - - - - - - - - - - - - - - - - - - - - - - -->
+  <target name="run" depends="install">
+    <exec executable="${processing.executable}" spawn="false"/>
+  </target>
+
+
+  <target name="test-compile" depends="build">
+    <mkdir dir="${test.build}"/>
+    <javac srcdir="${test.src}" destdir="${test.build}"
+      includeantruntime="false">
+      <classpath refid="test-classpath"/>
+    </javac>
+  </target>
+
+  <target name="test" depends="test-compile">
+    <junit printsummary="on" haltonfailure="yes" fork="true">
+      <classpath>
+        <path refid="test-classpath"/>
+        <pathelement location="${test.build}"/>
+      </classpath>
+      <formatter type="brief" usefile="false"/>
+      <batchtest>
+        <fileset dir="${test.src}" includes="**/*Test.java"/>
+      </batchtest>
+    </junit>
+  </target>
+
 </project>
