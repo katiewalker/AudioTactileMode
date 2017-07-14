@@ -23,7 +23,7 @@ public class AudioTactileToolbar extends JavaToolbar {
         Language.text("toolbar.read")) {
       @Override
       public void actionPerformed(ActionEvent e) {
-        handleRead(e.getModifiers());
+        ((AudioTactileEditor) editor).handleRead(e);
       }
     };
     buttons.add(readButton);
@@ -39,9 +39,5 @@ public class AudioTactileToolbar extends JavaToolbar {
   public void deactivateRead() {
     this.readButton.setSelected(false);
     this.repaint();
-  }
-
-  private void handleRead(int modifiers) {
-    ((AudioTactileEditor) editor).handleRead();
   }
 }

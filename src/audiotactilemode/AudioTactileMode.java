@@ -60,7 +60,4 @@ public class AudioTactileMode extends JavaMode {
 
     return -1;
   }
-
-  void handleRead(Sketch sketch) {
-  }
 }
