@@ -36,9 +36,7 @@
 
   <path id="test-classpath">
     <fileset dir="lib">
-      <include name="junit*.jar"/>
-      <include name="mockito*.jar"/>
-      <include name="hamcrest*.jar"/>
+      <include name="*.jar"/>
     </fileset>
     <pathelement location="${build}"/>
     <fileset dir="${processing.classes.core}">
@@ -65,7 +63,7 @@
     <mkdir dir="${build}"/>
 
     <javac srcdir="${src}" destdir="${build}" source="${java.target.version}"
-      includeantruntime="false">
+      includeantruntime="false" debug="true">
       <classpath>
         <path refid="library-classpath"/>
       </classpath>
@@ -81,14 +79,29 @@
     <mkdir dir="${bundle}"/>
     <mkdir dir="${bundle}/mode"/>
 
-    <jar jarfile="${bundle}/mode/${lib.name}.jar" basedir="${build}"/>
-    <!--zip destfile="${dist}/mode/${lib.name}.jar" excludes="**/*.MF">
-        <zipgroupfileset dir="lib" includes="*.jar" />
-    </zip-->
+    <!--<jar jarfile="${bundle}/mode/${lib.name}.jar"-->
+      <!--basedir="${build}/audiotactilemode"/>-->
+    <jar jarfile="${bundle}/mode/${lib.name}.jar"
+      basedir="${build}" includes="audiotactilemode/*">
+    </jar>
+
+    <jar jarfile="${bundle}/mode/${voice.name}.jar"
+      basedir="${build}" includes="processingvoice/*">
+      <manifest>
+        <attribute name="Main-Class"
+          value="processingvoice.ProcessingVoiceDirectory"/>
+        <attribute name="FreeTTSVoiceDefinition" value="true"/>
+        <attribute name="Class-Path" value="cmulex.jar"/>
+      </manifest>
+      <fileset dir="resources">
+        <include name="processingvoice/*"/>
+      </fileset>
+    </jar>
 
     <copy todir="${bundle}">
       <fileset dir="resources/">
         <exclude name="build*"/>
+        <exclude name="processingvoice/*"/>
       </fileset>
     </copy>
 
