@@ -1,15 +1,13 @@
 package audiotactilemode;
 
 import com.sun.speech.freetts.Voice;
-import com.sun.speech.freetts.VoiceManager;
+import processingvoice.ProcessingLanguageVoice;
 
 public class CodeReader {
   private Voice voice;
-  private VoiceManager manager;
 
   CodeReader() {
-    manager = VoiceManager.getInstance();
-    voice = manager.getVoice("kevin");
+    voice = new ProcessingLanguageVoice();
     voice.allocate();
   }
 

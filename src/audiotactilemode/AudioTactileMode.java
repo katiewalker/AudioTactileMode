@@ -39,14 +39,18 @@ public class AudioTactileMode extends JavaMode {
                              final boolean present) throws SketchException {
     String code = sketch.getMainProgram();
 
+    // TODO Replace import with SourceUtils.insertImports, and apply edits.
+
+    // TODO Try looking for setup with SketchParse.getSetupStart
+
     String librarySetUp = "import tactilegraphics.concept.*;\n"
-        + "ReadPixelsFromSketch reader;\n";
+        + "BlinkPixels writer = new BlinkPixels(this);\n";
 
-    int indexToAdd = findStartOfSetup(code);
+//    int indexToAdd = findStartOfSetup(code);
 
-    String modifiedCode = new StringBuilder(librarySetUp).append(code).insert
-        (indexToAdd + librarySetUp.length(),
-        "\nreader = new ReadPixelsFromSketch(this);\n").toString();
+    String modifiedCode = new StringBuilder(librarySetUp).append(code)
+        .toString();
+
     sketch.getCode(0).setProgram(modifiedCode);
 
     return super.handleLaunch(sketch, listener, present);
