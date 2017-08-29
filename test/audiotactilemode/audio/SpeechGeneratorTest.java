@@ -1,8 +1,11 @@
-package audiotactilemode;
+package audiotactilemode.audio;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
+import audiotactilemode.AudioTactileEditor;
+import audiotactilemode.audio.CodeReader;
+import audiotactilemode.audio.SpeechGenerator;
 import org.junit.Before;
 import org.junit.Test;
 
