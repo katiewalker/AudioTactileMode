@@ -1,7 +1,7 @@
 package audiotactilemode;
 
+import audiotactilemode.pdex.ProcessingTextTransform;
 import java.io.File;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import processing.app.Base;
 import processing.app.RunnerListener;
@@ -38,30 +38,16 @@ public class AudioTactileMode extends JavaMode {
   public Runner handleLaunch(Sketch sketch, RunnerListener listener,
                              final boolean present) throws SketchException {
     String code = sketch.getMainProgram();
-
-    // TODO Replace import with SourceUtils.insertImports, and apply edits.
-
-    // TODO Try looking for setup with SketchParse.getSetupStart
-
-    String librarySetUp = "import tactilegraphics.concept.*;\n"
-        + "BlinkPixels writer = new BlinkPixels(this);\n";
-
-//    int indexToAdd = findStartOfSetup(code);
-
-    String modifiedCode = new StringBuilder(librarySetUp).append(code)
-        .toString();
-
-    sketch.getCode(0).setProgram(modifiedCode);
+    sketch.getCode(0).setProgram(modifyCode(code));
 
     return super.handleLaunch(sketch, listener, present);
   }
 
-  private int findStartOfSetup(String code) {
-    Matcher matcher = setupPattern.matcher(code);
-    if (matcher.find()) {
-      return matcher.end();
-    }
-
-    return -1;
+  private String modifyCode(String code) {
+    ProcessingTextTransform transform = new ProcessingTextTransform(code);
+    transform.addImportClass("tactilegraphics.concept.BlinkPixels");
+    transform.addStatementToSetup("BlinkPixels writer = new BlinkPixels"
+        + "(this);\n");
+    return transform.apply();
   }
 }

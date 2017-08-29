@@ -1,5 +1,6 @@
 package audiotactilemode;
 
+import audiotactilemode.audio.SpeechGenerator;
 import java.awt.event.ActionEvent;
 import java.util.Objects;
 import javax.swing.JMenu;
@@ -78,13 +79,13 @@ public class AudioTactileEditor extends JavaEditor {
    * Retrieve line of sketch where the cursor currently resides.
    * @return the current {@link LineID}
    */
-  protected LineID getCurrentLineID() {
+  public LineID getCurrentLineID() {
     String tab = getSketch().getCurrentCode().getFileName();
     int lineNo = getTextArea().getCaretLine();
     return new LineID(tab, lineNo);
   }
 
-  protected String getCurrentLine() {
+  public String getCurrentLine() {
     LineID currentLineID = getCurrentLineID();
     return this.getLineText(currentLineID.lineIdx());
   }
