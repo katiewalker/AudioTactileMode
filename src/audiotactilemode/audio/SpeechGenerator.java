@@ -1,5 +1,6 @@
-package audiotactilemode;
+package audiotactilemode.audio;
 
+import audiotactilemode.AudioTactileEditor;
 import java.util.Stack;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -21,7 +22,7 @@ public class SpeechGenerator {
     readingLock = new ReentrantLock();
   }
 
-  SpeechGenerator(AudioTactileEditor editor) {
+  public SpeechGenerator(AudioTactileEditor editor) {
     this(editor, new CodeReader());
   }
 

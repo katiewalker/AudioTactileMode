@@ -1,4 +1,4 @@
-package audiotactilemode;
+package audiotactilemode.audio;
 
 import com.sun.speech.freetts.Voice;
 import processingvoice.ProcessingLanguageVoice;
