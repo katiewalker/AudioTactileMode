@@ -22,14 +22,8 @@ public class ProcessingTextTransform extends TextTransform {
   }
 
   public void addStatementToSetup(String statement) {
-    // We insert the statement at the beginning because it doesn't matter
-    // where it is inserted. Import statements (what are usually at the
-    // beginning of files) can be anywhere. This also works when the setup
-    // function is defined elsewhere. This *may* be an issue for Java-style
-    // files, but these files are outside the scope of the project, for now.
-    // Similarly, this may break if Processing changes how it processes the
-    // files (this would be true of any implementation, so the risk is
-    // acceptable).
+    // This doesn't really insert to setup, but that's the intent. It's not
+    // necessary to actually insert the statement in the setup, at any rate.
     Edit edit = Edit.insert(0, statement);
     add(edit);
   }
