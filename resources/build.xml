@@ -82,7 +82,7 @@
     <!--<jar jarfile="${bundle}/mode/${lib.name}.jar"-->
       <!--basedir="${build}/audiotactilemode"/>-->
     <jar jarfile="${bundle}/mode/${lib.name}.jar"
-      basedir="${build}" includes="audiotactilemode/*">
+      basedir="${build}" includes="audiotactilemode/**/*">
     </jar>
 
     <jar jarfile="${bundle}/mode/${voice.name}.jar"
