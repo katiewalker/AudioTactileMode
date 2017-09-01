@@ -40,14 +40,16 @@ public class AudioTactileMode extends JavaMode {
     String code = sketch.getMainProgram();
     sketch.getCode(0).setProgram(modifyCode(code));
 
+    System.out.println(sketch.getCode(0).getProgram());
+
     return super.handleLaunch(sketch, listener, present);
   }
 
   private String modifyCode(String code) {
     ProcessingTextTransform transform = new ProcessingTextTransform(code);
-    transform.addImportClass("tactilegraphics.concept.BlinkPixels");
-    transform.addStatementToSetup("BlinkPixels writer = new BlinkPixels"
-        + "(this);\n");
+    transform.addImportClass("tactilegraphics.concept.ReadPixelsFromSketch");
+    transform.addStatementToSetup("ReadPixelsFromSketch writer = new "
+        + "ReadPixelsFromSketch(this);\n");
     return transform.apply();
   }
 }
