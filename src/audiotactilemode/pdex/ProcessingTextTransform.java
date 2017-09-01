@@ -31,5 +31,6 @@ public class ProcessingTextTransform extends TextTransform {
     // files (this would be true of any implementation, so the risk is
     // acceptable).
     Edit edit = Edit.insert(0, statement);
+    add(edit);
   }
 }
