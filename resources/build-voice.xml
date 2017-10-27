@@ -1,0 +1,47 @@
+<project name="voice" basedir="../">
+  <property file="./resources/build-mode.properties"/>
+
+  <property name="src" value="src/processingvoice"/>
+  <property name="build" value="build/src/processingvoice"/>
+  <property name="bin" value="bin"/>
+  <property name="dist" value="dist"/>
+
+
+  <path id="freetts-classpath">
+    <fileset dir="lib">
+      <include name="*.jar"/>
+    </fileset>
+  </path>
+
+  <target name="build">
+    <mkdir dir="${build}"/>
+
+    <javac srcdir="${src}" destdir="${build}"
+      source="${java.target.version}"
+      includeantruntime="false" debug="true">
+      <classpath>
+        <path refid="freetts-classpath"/>
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="package" depends="build">
+    <property name="bundle" value="${dist}/${mode.name}"/>
+    <delete file="${bundle}/mode/${voice.name}.jar"/>
+    <jar jarfile="${bundle}/mode/${voice.name}.jar"
+      basedir="${build}" includes="processingvoice/*">
+      <manifest>
+        <attribute name="Main-Class"
+          value="processingvoice.ProcessingVoiceDirectory"/>
+        <attribute name="FreeTTSVoiceDefinition" value="true"/>
+        <attribute name="Class-Path" value="cmulex.jar"/>
+      </manifest>
+      <fileset dir="resources">
+        <include name="processingvoice/*"/>
+      </fileset>
+    </jar>
+    <copy todir="${bundle}/mode">
+      <fileset dir="lib/"/>
+    </copy>
+  </target>
+</project>

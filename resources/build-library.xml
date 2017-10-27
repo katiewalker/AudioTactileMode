@@ -1,0 +1,58 @@
+<project name="library" default="install" basedir="../">
+
+  <!--<property file="./resources/build-library.properties"/>-->
+  <property file="./resources/build-mode.properties"/>
+
+
+  <property name="library.src" value="src/tactilegraphics"/>
+  <property name="library.build" value="build/src"/>
+  <property name="library.bin" value="bin"/>
+  <property name="library.dist" value="dist/TactileGraphics"/>
+
+  <property name="project.jar" value="TactileGraphicsLibrary.jar"/>
+
+  <path id="library-classpath">
+    <fileset dir="${processing.classes.core}">
+      <include name="*.jar"/>
+    </fileset>
+  </path>
+
+  <target name="run" depends="install">
+    <exec executable="${processing.executable}" spawn="false"/>
+  </target>
+
+  <target name="install" depends="package">
+    <delete dir="${processing.libraries}/${library.name}"/>
+
+    <copy todir="${processing.libraries}/">
+      <fileset dir="${library.dist}"/>
+    </copy>
+  </target>
+
+  <target name="package">
+    <delete dir="${library.dist}"/>
+    <property name="bundle" value="${library.dist}/${library.name}"/>
+    <mkdir dir="${bundle}"/>
+    <mkdir dir="${bundle}/library"/>
+
+    <jar jarfile="${bundle}/library/${library.name}.jar"
+      basedir="${library.build}"
+      includes="tactilegraphics/*, tactilegraphics/*/*">
+    </jar>
+  </target>
+
+  <target name="compile">
+    <mkdir dir="${library.build}"/>
+
+    <javac srcdir="${library.src}" destdir="${library.build}"
+      source="${java.target.version}"
+      includeantruntime="false" debug="true">
+      <classpath>
+        <path refid="library-classpath"/>
+      </classpath>
+    </javac>
+  </target>
+
+
+</project>
+

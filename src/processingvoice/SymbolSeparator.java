@@ -7,10 +7,9 @@ import com.sun.speech.freetts.Relation;
 import com.sun.speech.freetts.Utterance;
 import com.sun.speech.freetts.UtteranceProcessor;
 
-public class SeparateTokens implements UtteranceProcessor {
+public class SymbolSeparator implements UtteranceProcessor {
 
-  Relation separatedTokens;
-  Item tokenItem;
+  private Item tokenItem;
   private static String camelCaseRegex = "(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])";
 
 
@@ -25,17 +24,17 @@ public class SeparateTokens implements UtteranceProcessor {
     Relation tokenRelation = utterance.getRelation("Token");
     if (tokenRelation == null) {
       throw new IllegalStateException(
-          "TokenToWords: Token relation does not exist");
+          "SymbolSeparator: Token relation does not exist");
     } else {
 
       for (tokenItem = tokenRelation.getHead(); tokenItem != null;
           tokenItem = tokenItem.getNext()) {
-        separateTokens();
+        separate();
       }
     }
   }
 
-  void separateTokens() {
+  private void separate() {
     // Get the name of the current token.
     FeatureSet tokenFeatures = tokenItem.getFeatures();
     String name = tokenFeatures.getString("name");

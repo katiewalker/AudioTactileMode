@@ -61,7 +61,7 @@ public class ProcessingLanguageVoice extends CMUDiphoneVoice {
     super.setupUtteranceProcessors();
 
     List processors = getUtteranceProcessors();
-    processors.add(0, new SeparateTokens());
+    processors.add(0, new SymbolSeparator());
   }
 
   @Override

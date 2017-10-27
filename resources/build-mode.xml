@@ -1,13 +1,11 @@
-<project name="AudioTactileMode" default="install" basedir="../">
-  <description>Mode for programming with visual impairments.
-  </description>
+<project name="mode" default="install" basedir="../">
+  <description>Mode for programming with visual impairments.</description>
 
-  <!-- All required modification (setting of paths, etc.) are to be done in the build.properties file
-       when building the REPL Mode -->
-  <property file="./resources/build.properties"/>
+  <!-- All required modification (setting of paths, etc.) are to be done in the build.properties file-->
+  <property file="./resources/build-mode.properties"/>
 
 
-  <!-- Nothing below this line required modification -->
+  <!-- Nothing below this line *should* require modification -->
   <!-- - - - - - - - - - - - - - - - - - - - - - - -->
   <property name="src" value="src"/>
   <property name="test.src" value="test"/>
@@ -15,6 +13,10 @@
   <property name="test.build" value="build/test"/>
   <property name="bin" value="bin"/>
   <property name="dist" value="dist"/>
+
+  <include file="build-voice.xml"/>
+  <include file="build-papplet.xml"/>
+  <include file="build-library.xml"/>
 
   <path id="library-classpath">
     <fileset dir="${processing.classes.core}">
@@ -29,25 +31,11 @@
       <include name="*.jar"/>
     </fileset>
 
+    <fileset dir="${processing.classes.serial}">
+      <include name="*.jar"/>
+    </fileset>
+
     <fileset dir="lib">
-      <include name="*.jar"/>
-    </fileset>
-  </path>
-
-  <path id="test-classpath">
-    <fileset dir="lib">
-      <include name="*.jar"/>
-    </fileset>
-    <pathelement location="${build}"/>
-    <fileset dir="${processing.classes.core}">
-      <include name="*.jar"/>
-    </fileset>
-
-    <fileset dir="${processing.classes.pde}">
-      <include name="*.jar"/>
-    </fileset>
-
-    <fileset dir="${processing.classes.javamode}">
       <include name="*.jar"/>
     </fileset>
   </path>
@@ -75,27 +63,12 @@
   - - - - - - - - - - - - - - - - - - - - - - - -->
   <target name="package" depends="build">
     <delete dir="${dist}"/>
-    <property name="bundle" value="${dist}/${lib.name}"/>
+    <property name="bundle" value="${dist}/${mode.name}"/>
     <mkdir dir="${bundle}"/>
     <mkdir dir="${bundle}/mode"/>
 
-    <!--<jar jarfile="${bundle}/mode/${lib.name}.jar"-->
-      <!--basedir="${build}/audiotactilemode"/>-->
-    <jar jarfile="${bundle}/mode/${lib.name}.jar"
-      basedir="${build}" includes="audiotactilemode/**/*">
-    </jar>
-
-    <jar jarfile="${bundle}/mode/${voice.name}.jar"
-      basedir="${build}" includes="processingvoice/*">
-      <manifest>
-        <attribute name="Main-Class"
-          value="processingvoice.ProcessingVoiceDirectory"/>
-        <attribute name="FreeTTSVoiceDefinition" value="true"/>
-        <attribute name="Class-Path" value="cmulex.jar"/>
-      </manifest>
-      <fileset dir="resources">
-        <include name="processingvoice/*"/>
-      </fileset>
+    <jar jarfile="${bundle}/mode/${mode.name}.jar"
+      basedir="${build}" includes="audiotactilemode/*, audiotactilemode/*/*">
     </jar>
 
     <copy todir="${bundle}">
@@ -103,10 +76,6 @@
         <exclude name="build*"/>
         <exclude name="processingvoice/*"/>
       </fileset>
-    </copy>
-
-    <copy todir="${bundle}/mode">
-      <fileset dir="lib/"/>
     </copy>
 
     <replaceregexp file="${bundle}/mode.properties" flags="g"
@@ -118,8 +87,8 @@
   <!-- - - - - - - - - - - - - - - - - - - - - - -
       INSTALL
   - - - - - - - - - - - - - - - - - - - - - - - -->
-  <target name="install" depends="package">
-    <delete dir="${processing.modes}/${lib.name}"/>
+  <target name="install" depends="package, voice.package, papplet.package">
+    <delete dir="${processing.modes}/${mode.name}"/>
 
     <copy todir="${processing.modes}/">
       <fileset dir="${dist}"/>
@@ -141,26 +110,5 @@
     <exec executable="${processing.executable}" spawn="false"/>
   </target>
 
-
-  <target name="test-compile" depends="build">
-    <mkdir dir="${test.build}"/>
-    <javac srcdir="${test.src}" destdir="${test.build}"
-      includeantruntime="false">
-      <classpath refid="test-classpath"/>
-    </javac>
-  </target>
-
-  <target name="test" depends="test-compile">
-    <junit printsummary="on" haltonfailure="yes" fork="true">
-      <classpath>
-        <path refid="test-classpath"/>
-        <pathelement location="${test.build}"/>
-      </classpath>
-      <formatter type="brief" usefile="false"/>
-      <batchtest>
-        <fileset dir="${test.src}" includes="**/*Test.java"/>
-      </batchtest>
-    </junit>
-  </target>
 
 </project>

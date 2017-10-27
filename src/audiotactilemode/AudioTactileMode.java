@@ -1,8 +1,6 @@
 package audiotactilemode;
 
-import audiotactilemode.pdex.ProcessingTextTransform;
 import java.io.File;
-import java.util.regex.Pattern;
 import processing.app.Base;
 import processing.app.RunnerListener;
 import processing.app.Sketch;
@@ -15,12 +13,8 @@ import processing.mode.java.runner.Runner;
 
 public class AudioTactileMode extends JavaMode {
 
-  private Pattern setupPattern;
-
   public AudioTactileMode(Base base, File folder) {
     super(base, folder);
-
-    setupPattern = Pattern.compile("size\\([0-9]+,\\s*[0-9]*\\);");
   }
 
   @Override
@@ -34,22 +28,28 @@ public class AudioTactileMode extends JavaMode {
     return "Audio Tactile Mode";
   }
 
-  @Override
   public Runner handleLaunch(Sketch sketch, RunnerListener listener,
-                             final boolean present) throws SketchException {
-    String code = sketch.getMainProgram();
-    sketch.getCode(0).setProgram(modifyCode(code));
+      final boolean present) throws SketchException {
+    System.out.println("Mode.getFolder()");
+    System.out.println(this.getFolder());
+    AudioTactileBuild build = new AudioTactileBuild(sketch);
 
-    System.out.println(sketch.getCode(0).getProgram());
 
-    return super.handleLaunch(sketch, listener, present);
-  }
+//    String appletClassName = build.build(false);
+    String appletClassName = build.build(true);
 
-  private String modifyCode(String code) {
-    ProcessingTextTransform transform = new ProcessingTextTransform(code);
-    transform.addImportClass("tactilegraphics.concept.ReadPixelsFromSketch");
-    transform.addStatementToSetup("ReadPixelsFromSketch writer = new "
-        + "ReadPixelsFromSketch(this);\n");
-    return transform.apply();
+    if (appletClassName != null) {
+      final Runner runtime = new Runner(build, listener);
+      new Thread(() -> {
+        // these block until finished
+        if (present) {
+          runtime.present(null);
+        } else {
+          runtime.launch(null);
+        }
+      }).start();
+      return runtime;
+    }
+    return null;
   }
 }

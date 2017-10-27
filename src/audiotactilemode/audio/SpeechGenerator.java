@@ -35,6 +35,9 @@ public class SpeechGenerator {
   }
 
   public void readCurrentFunction() {
+    // Well, this might be the cursor location.
+    int location = editor.getTextArea().getSelectionStart();
+
     int currentLineIndex = editor.getCurrentLineID().lineIdx();
     int offset = 0;
 

@@ -1,0 +1,39 @@
+<project name="papplet" basedir="../">
+  <property file="./resources/build-mode.properties"/>
+
+  <property name="papplet.src" value="src/audiotactilemode"/>
+  <property name="papplet.build" value="build/src"/>
+  <property name="papplet.bin" value="bin"/>
+  <property name="papplet.dist" value="dist"/>
+
+  <path id="library-classpath">
+    <fileset dir="${processing.classes.core}">
+      <include name="*.jar"/>
+    </fileset>
+  </path>
+
+  <target name="build">
+    <mkdir dir="${papplet.build}"/>
+
+    <echo message="${papplet.src}"/>
+
+    <javac srcdir="${papplet.src}" destdir="${papplet.build}"
+      source="${java.target.version}"
+      includeantruntime="false" debug="true">
+      <include name="PApplet.java"/>
+      <classpath>
+        <path refid="library-classpath"/>
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="package" depends="build">
+    <property name="bundle" value="${papplet.dist}/${mode.name}"/>
+    <delete file="${bundle}/mode/${papplet.name}.jar"/>
+    <jar jarfile="${bundle}/mode/${papplet.name}.jar"
+      basedir="${papplet.build}" includes="audiotactilemode/PApplet.class"/>
+    <copy todir="${bundle}/mode">
+      <fileset dir="lib/"/>
+    </copy>
+  </target>
+</project>

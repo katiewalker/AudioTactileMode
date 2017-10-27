@@ -15,6 +15,7 @@ import processing.app.ui.EditorToolbar;
 import processing.app.ui.Toolkit;
 import processing.mode.java.JavaEditor;
 import processing.mode.java.debug.LineID;
+import processing.mode.java.preproc.PdePreprocessor;
 
 public class AudioTactileEditor extends JavaEditor {
   AudioTactileMode atmode;
@@ -24,19 +25,27 @@ public class AudioTactileEditor extends JavaEditor {
       EditorState state, Mode mode)
       throws EditorException {
     super(base, path, state, mode);
-
+    System.out.println("Doing a thing here too");
     speechGenerator = new SpeechGenerator(this);
     atmode = (AudioTactileMode) mode;
   }
 
+  @Override
   protected JEditTextArea createTextArea() {
     return new AudioTactileTextArea(new PdeTextAreaDefaults(mode), this);
   }
 
+  @Override
+  public PdePreprocessor createPreprocessor(final String sketchName) {
+    return new AudioTactilePdePreprocessor(sketchName);
+  }
+
+  @Override
   public EditorToolbar createToolbar() {
     return new AudioTactileToolbar(this);
   }
 
+  @Override
   public JMenu buildSketchMenu() {
     JMenu sketchMenu = super.buildSketchMenu();
 
